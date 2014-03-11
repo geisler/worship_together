@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-    let(:user) { User.new(name: 'John Doe', email: 'jdoe@example.com', password: 'password') }
+    let(:user) { User.create(name: 'John Doe', email: 'jdoe@example.com', password: 'password') }
     subject { user }
 
     it { should respond_to(:name) }
@@ -44,5 +44,35 @@ describe User do
 	before { user.password = ' ' }
 
 	it { should_not be_valid }
+    end
+
+    describe "long name" do
+	before { user.name = 'a' * 51 }
+
+	it { should_not be_valid }
+    end
+
+    describe "duplicate name" do
+	let(:duplicate) do
+	    d = user.dup
+	    d.email = 'duplicate@example.com'
+	    d
+	end
+
+	it "is not allowed" do
+	    expect(duplicate).not_to be_valid
+	end
+    end
+
+    describe "duplicate email" do
+	let(:duplicate) do
+	    d = user.dup
+	    d.name = 'Jane Doe'
+	    d
+	end
+
+	it "is not allowed" do
+	    expect(duplicate).not_to be_valid
+	end
     end
 end

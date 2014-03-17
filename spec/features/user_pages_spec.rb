@@ -7,7 +7,7 @@ describe "User Pages" do
 	describe "all" do
 	    before do
 		25.times { |i| FactoryGirl.create(:user) }
-		visit '/users'
+		visit users_path
 	    end
 
 	    it { should have_content('List of users') }

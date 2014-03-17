@@ -6,11 +6,7 @@ describe "User Pages" do
     describe "show users" do
 	describe "all" do
 	    before do
-		25.times do |i|
-		    User.create(name: "Person #{i}",
-				email: "person.#{i}@example.com",
-				password: 'password')
-		end
+		25.times { |i| FactoryGirl.create(:user) }
 		visit '/users'
 	    end
 

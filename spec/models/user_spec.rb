@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe User do
-    let(:user) { User.create(name: 'John Doe', email: 'jdoe@example.com', password: 'password') }
+    let(:user) { FactoryGirl.create(:user) }
     subject { user }
 
     it { should respond_to(:name) }

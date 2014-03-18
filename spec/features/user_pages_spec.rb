@@ -55,7 +55,7 @@ describe "User Pages" do
 		expect { click_button 'Submit' }.to change(User, :count).by(1)
 	    end
 
-	    it "produces a welcome message" do
+	    describe "produces a welcome message" do
 		before { click_button 'Submit' }
 
 		it { should have_alert(:success, text: 'Welcome') }

@@ -1,4 +1,7 @@
 <h1>List of users</h1>
 
+<% if !flash[:success].nil? %>
+    <p class="ALERT-success"><%= flash[:success] %>
+<% end %>
 <p><%= @users.count %> users</p>
 <ol><%= render @users %></ol>

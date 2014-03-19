@@ -8,7 +8,8 @@ class UsersController < ApplicationController
     end
 
     def create
-	User.create(params.require(:user).permit(:name, :email, :password))
+	user = User.create(params.require(:user).permit(:name, :email, :password))
+	flash[:success] = "Welcome to the site, #{user.name}"
 	redirect_to users_path
     end
 end

@@ -4,6 +4,16 @@ describe "User Pages" do
     subject { page }
 
     describe "show users" do
+	describe "individually" do
+	    let (:user) { FactoryGirl.create(:user) }
+
+	    before { visit user_path(user) }
+
+	    it { should have_content(user.name) }
+	    it { should have_content(user.email) }
+	    it { should_not have_content(user.password) }
+	end
+
 	describe "all" do
 	    before do
 		25.times { |i| FactoryGirl.create(:user) }

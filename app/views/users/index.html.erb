@@ -3,5 +3,8 @@
 <% if !flash[:success].nil? %>
     <p class="ALERT-success"><%= flash[:success] %>
 <% end %>
+<% if !flash[:danger].nil? %>
+    <p class="ALERT-danger"><%= flash[:danger] %>
+<% end %>
 <p><%= @users.count %> users</p>
 <ol><%= render @users %></ol>

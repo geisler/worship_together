@@ -13,7 +13,7 @@ class UsersController < ApplicationController
 	    flash[:success] = "Welcome to the site, #{@user.name}"
 	    redirect_to users_path
 	else
-	    flash[:danger] = "Unable to create new user"
+	    flash.now[:danger] = "Unable to create new user"
 	    render 'new'
 	end
     end

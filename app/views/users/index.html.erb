@@ -1,4 +1,4 @@
 <h1>List of users</h1>
 
-<p><%= @users.count %> users</p>
+<p><%= pluralize(@users.count, 'user') %></p>
 <ol><%= render @users %></ol>

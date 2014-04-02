@@ -8,12 +8,13 @@ class UsersController < ApplicationController
     end
 
     def create
-	user = User.new(params.require(:user).permit(:name, :email, :password))
-	if user.save
-	    flash[:success] = "Welcome to the site, #{user.name}"
+	@user = User.new(params.require(:user).permit(:name, :email, :password))
+	if @user.save
+	    flash[:success] = "Welcome to the site, #{@user.name}"
+	    redirect_to users_path
 	else
 	    flash[:danger] = "Unable to create new user"
+	    render 'new'
 	end
-	redirect_to users_path
     end
 end

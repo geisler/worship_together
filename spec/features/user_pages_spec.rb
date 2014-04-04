@@ -82,6 +82,18 @@ describe "User Pages" do
 
 		it { should have_alert(:success, text: 'Welcome') }
 	    end
+
+	    describe "redirects to profile page", type: :request do
+		before do
+		    post users_path, user: { name: 'John Doe',
+					     email: 'john.doe@example.com',
+					     password: 'password' }
+		end
+
+		specify do
+		    expect(response).to redirect_to(user_path(assigns(:user)))
+		end
+	    end
 	end
     end
 end

@@ -14,6 +14,12 @@ describe "User Pages" do
 	    it { should_not have_content(user.password) }
 	end
 
+	describe "non-existant", type: :request do
+	    before { get user_path(-1) }
+
+	    specify { expect(response).to redirect_to(users_path) }
+	end
+
 	describe "all" do
 	    before do
 		25.times { |i| FactoryGirl.create(:user) }

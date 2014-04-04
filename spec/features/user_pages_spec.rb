@@ -18,6 +18,12 @@ describe "User Pages" do
 	    before { get user_path(-1) }
 
 	    specify { expect(response).to redirect_to(users_path) }
+
+	    describe "follow redirect" do
+		before { visit user_path(-1) }
+
+		it { should have_alert(:danger, text: "Unable") }
+	    end
 	end
 
 	describe "all" do

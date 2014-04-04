@@ -103,7 +103,7 @@ describe "User Pages" do
 
 	before { visit edit_user_path(user) }
 
-	it { should have_field('Name', with: user.name) }
+	it { should have_field('Username', with: user.name) }
 	it { should have_field('Email', with: user.email) }
 	it { should have_field('Password') }
 

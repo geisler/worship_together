@@ -1,21 +1,7 @@
-<% if @user.errors.any? %>
-    <p class="ALERT-danger">The form has <%= pluralize(@user.errors.count, 'error') %>.</p>
-    <ul>
-	<% @user.errors.full_messages.each do |message| %>
-	    <li><%= message %></li>
-	<% end %>
-    </ul>
-<% end %>
+<%= render partial: 'errors' %>
 
-<%= form_for @user do |f| %>
-    <%= f.label :name, 'Username' %>
-    <%= f.text_field :name %>
+<%= form_for @user do |form| %>
+    <%= render partial: 'fields', locals: { f: form } %>
 
-    <%= f.label :email %>
-    <%= f.text_field :email %>
-
-    <%= f.label :password %>
-    <%= f.password_field :password %>
-
-    <%= f.submit 'Submit' %>
+    <%= form.submit 'Submit' %>
 <% end %>

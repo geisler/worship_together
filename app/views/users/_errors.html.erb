@@ -1,0 +1,9 @@
+<% if @user.errors.any? %>
+    <p class="ALERT-danger">The form has <%= pluralize(@user.errors.count, 'error') %>.</p>
+    <ul>
+	<% @user.errors.full_messages.each do |message| %>
+	    <li><%= message %></li>
+	<% end %>
+    </ul>
+<% end %>
+

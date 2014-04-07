@@ -45,6 +45,8 @@ describe "User Pages" do
     end
 
     describe "creating user" do
+	let (:submit) { 'Create new user' }
+
 	before { visit new_user_path }
 
 	it "hides password text" do
@@ -53,11 +55,11 @@ describe "User Pages" do
 
 	describe "with invalid information" do
 	    it "does not add the user to the system" do
-		expect { click_button 'Submit' }.not_to change(User, :count)
+		expect { click_button submit }.not_to change(User, :count)
 	    end
 
 	    it "produces an error message" do
-		click_button 'Submit'
+		click_button submit
 		should have_alert(:danger)
 	    end
 	end
@@ -70,15 +72,15 @@ describe "User Pages" do
 	    end
 
 	    it "allows the user to fill in the fields" do
-		click_button 'Submit'
+		click_button submit
 	    end
 
 	    it "does add the user to the system" do
-		expect { click_button 'Submit' }.to change(User, :count).by(1)
+		expect { click_button submit }.to change(User, :count).by(1)
 	    end
 
 	    describe "produces a welcome message" do
-		before { click_button 'Submit' }
+		before { click_button submit }
 
 		it { should have_alert(:success, text: 'Welcome') }
 	    end
@@ -100,6 +102,7 @@ describe "User Pages" do
     describe "editing users" do
 	let (:user) { FactoryGirl.create(:user) }
 	let!(:original_name) { user.name }
+	let (:submit) { 'Update user profile' }
 
 	before { visit edit_user_path(user) }
 
@@ -115,18 +118,18 @@ describe "User Pages" do
 	    end
 
 	    describe "does not change data" do
-		before { click_button 'Submit' }
+		before { click_button submit }
 
 		specify { expect(user.reload.name).not_to eq('') }
 		specify { expect(user.reload.name).to eq(original_name) }
 	    end
 
 	    it "does not add a new user to the system" do
-		expect { click_button 'Submit' }.not_to change(User, :count)
+		expect { click_button submit }.not_to change(User, :count)
 	    end
 
 	    it "produces an error message" do
-		click_button 'Submit'
+		click_button submit
 		should have_alert(:danger)
 	    end
 	end
@@ -139,7 +142,7 @@ describe "User Pages" do
 	    end
 
 	    describe "changes the data" do
-		before { click_button 'Submit' }
+		before { click_button submit }
 
 		specify { expect(user.reload.name).to eq('New Name') }
 		specify { expect(user.reload.email).to eq('new.name@example.com') }
@@ -156,12 +159,12 @@ describe "User Pages" do
 	    end
 
 	    it "produces an update message" do
-		click_button 'Submit'
+		click_button submit
 		should have_alert(:success)
 	    end
 
 	    it "does not add a new user to the system" do
-		expect { click_button 'Submit' }.not_to change(User, :count)
+		expect { click_button submit }.not_to change(User, :count)
 	    end
 	end
     end

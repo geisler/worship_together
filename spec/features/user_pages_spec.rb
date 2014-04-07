@@ -181,4 +181,29 @@ describe "User Pages" do
 	    end
 	end
     end
+
+    describe "delete users" do
+	let (:user) { FactoryGirl.create(:user) }
+
+	before { visit users_path }
+
+	it { should have_link('delete', href: user_path(user)) }
+
+	describe "redirects properly", type: :request do
+	    before { delete user_path(user) }
+
+	    specify { expect(response).to redirect_to(users_path) }
+	end
+
+	it "produces a delete message" do
+	    click_link('delete', match: :first)
+	    should have_alert(:success)
+	end
+
+	it "removes a user from the system" do
+	    expect do
+		click_link('delete', match: :first)
+	    end.to change(User, :count).by(-1)
+	end
+    end
 end

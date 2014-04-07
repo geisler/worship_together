@@ -134,6 +134,19 @@ describe "User Pages" do
 	    end
 	end
 
+	describe "non-existant", type: :request do
+	    before { get edit_user_path(-1) }
+
+	    specify { expect(response).to redirect_to(users_path) }
+
+	    describe "follow redirect" do
+		before { visit edit_user_path(-1) }
+
+		it { should have_alert(:danger, text: "Unable") }
+	    end
+	end
+
+
 	describe "with valid information" do
 	    before do
 		fill_in 'Username', with: 'New Name'

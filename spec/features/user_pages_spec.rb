@@ -183,7 +183,7 @@ describe "User Pages" do
     end
 
     describe "delete users" do
-	let (:user) { FactoryGirl.create(:user) }
+	let!(:user) { FactoryGirl.create(:user) }
 
 	before { visit users_path }
 

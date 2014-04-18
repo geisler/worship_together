@@ -1,1 +1,4 @@
-<li><%= user.name %>: <%= user.email %></li>
+<li>
+    <%= user.name %>: <%= user.email %>
+    <%= link_to 'delete', user, method: :delete %>
+</li>

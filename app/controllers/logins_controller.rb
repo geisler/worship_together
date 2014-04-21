@@ -6,6 +6,7 @@ class LoginsController < ApplicationController
 	user = User.find_by(name: params[:username])
 	if user && user.password == params[:password]
 	    flash[:success] = 'Logged in'
+	    session[:user_id] = user.id
 	    redirect_to users_path
 	else
 	    flash.now[:danger] = 'Invalid username or password'

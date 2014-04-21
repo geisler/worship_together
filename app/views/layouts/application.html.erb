@@ -8,6 +8,16 @@
 </head>
 <body>
 
+<nav>
+    <ul>
+	<% if logged_in? %>
+	    <%= link_to 'Log Out', login_path, method: :delete %>
+	<% else %>
+	    <%= link_to 'Log In', new_login_path %>
+	<% end %>
+    </ul>
+</nav>
+
 <% flash.each do |type, message| %>
     <p class="ALERT-<%= type %>"><%= message %></p>
 <% end %>

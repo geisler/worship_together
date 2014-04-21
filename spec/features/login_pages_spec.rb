@@ -12,6 +12,18 @@ describe "LoginPages" do
 	    before { click_button 'Log In' }
 
 	    it { should have_alert(:danger, text: 'Invalid') }
+
+	    describe "with bad password" do
+		let (:user) { FactoryGirl.create(:user) }
+
+		before do
+		    fill_in 'Username', with: user.name
+		    fill_in 'Password', with: 'garbage'
+		    click_button 'Log In'
+		end
+
+		it { should have_alert(:danger, text: 'Invalid') }
+	    end
 	end
 
 	describe "with valid account information" do

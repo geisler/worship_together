@@ -1,6 +1,8 @@
 WorshipTogether::Application.routes.draw do
   resources :users
   resources :logins, only: [:new, :create, :destroy]
+
+  delete 'logout', to: 'logins#destroy', as: :logout
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

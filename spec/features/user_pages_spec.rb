@@ -106,7 +106,10 @@ describe "User Pages" do
 	let!(:original_name) { user.name }
 	let (:submit) { 'Update user profile' }
 
-	before { visit edit_user_path(user) }
+	before do
+	    login user
+	    visit edit_user_path(user)
+	end
 
 	it { should have_field('Username', with: user.name) }
 	it { should have_field('Email', with: user.email) }

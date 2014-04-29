@@ -31,7 +31,6 @@ shared_examples "redirects to a login" do |options|
     if options[:direct_access]
 	describe "direct visit to HTTP path", type: :request do
 	    before { send(direct_http_method, direct_path) }
-#before { puts direct_http_method.to_s + ": " + direct_path }
 
 	    it { expect_redirect_with_alert(login_path, :warning) }
 	end

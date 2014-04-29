@@ -192,12 +192,18 @@ describe "User Pages" do
     describe "delete users" do
 	let!(:user) { FactoryGirl.create(:user) }
 
-	before { visit users_path }
+	before do
+	    login user
+	    visit users_path
+	end
 
 	it { should have_link('delete', href: user_path(user)) }
 
 	describe "redirects properly", type: :request do
-	    before { delete user_path(user) }
+	    before do
+		login user, avoid_capybara: true
+		delete user_path(user)
+	    end
 
 	    specify { expect(response).to redirect_to(users_path) }
 	end

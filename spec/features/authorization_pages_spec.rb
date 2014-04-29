@@ -9,6 +9,8 @@ describe 'AuthorizationPages' do
 	describe "for Users controller" do
 	    it_behaves_like "redirects to a login" do
 		let (:browser_path) { edit_user_path(user) }
+		let (:direct_path) { user_path(user) }
+		let (:direct_http_method) { :patch }
 	    end
 	end
     end
@@ -18,7 +20,6 @@ describe 'AuthorizationPages' do
 	    describe "edit action" do
 		before do
 		    login(user)
-
 		    visit edit_user_path(user)
 		end
 
@@ -37,6 +38,8 @@ describe 'AuthorizationPages' do
 
 		it_behaves_like "redirects to a login" do
 		    let (:browser_path) { edit_user_path(user) }
+		    let (:direct_path) { user_path(user) }
+		    let (:direct_http_method) { :patch }
 		end
 	    end
 	end

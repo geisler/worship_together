@@ -151,7 +151,6 @@ describe "User Pages" do
 	    end
 	end
 
-
 	describe "with valid information" do
 	    before do
 		fill_in 'Username', with: 'New Name'
@@ -169,6 +168,7 @@ describe "User Pages" do
 
 	    describe "redirects back to profile page", type: :request do
 		before do
+		    login user, avoid_capybara: true
 		    patch user_path(user), user: { name: 'New Name',
 						   email: 'new.name@example.com',
 						   password: user.password,

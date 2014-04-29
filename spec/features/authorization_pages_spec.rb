@@ -27,4 +27,18 @@ describe 'AuthorizationPages' do
 	    end
 	end
     end
+
+    describe "authenticated, but wrong users" do
+	describe "for Users controller" do
+	    describe "edit action" do
+		let (:other_user) { FactoryGirl.create(:user) }
+
+		before { login other_user }
+
+		it_behaves_like "redirects to a login" do
+		    let (:browser_path) { edit_user_path(user) }
+		end
+	    end
+	end
+    end
 end

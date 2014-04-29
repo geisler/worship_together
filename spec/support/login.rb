@@ -12,6 +12,6 @@ shared_examples "redirects to a login" do |options|
 	before { visit browser_path }
 
 	it { should have_alert(:warning) }
-	it { should have_content('Log In') }
+	it { should have_content('Sign In') }
     end
 end

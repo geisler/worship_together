@@ -12,6 +12,11 @@ describe 'AuthorizationPages' do
 		let (:direct_path) { user_path(user) }
 		let (:direct_http_method) { :patch }
 	    end
+
+	    it_behaves_like "redirects to a login", skip_browser: true do
+		let (:direct_path) { user_path(user) }
+		let (:direct_http_method) { :delete }
+	    end
 	end
     end
 
@@ -40,6 +45,11 @@ describe 'AuthorizationPages' do
 		    let (:browser_path) { edit_user_path(user) }
 		    let (:direct_path) { user_path(user) }
 		    let (:direct_http_method) { :patch }
+		end
+
+		it_behaves_like "redirects to a login", skip_browser: true do
+		    let (:direct_path) { user_path(user) }
+		    let (:direct_http_method) { :delete }
 		end
 	    end
 	end

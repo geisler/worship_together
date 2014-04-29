@@ -17,7 +17,8 @@ def expect_redirect_with_alert(path, alert_type)
 end
 
 shared_examples "redirects to a login" do |options|
-    options ||= {skip_browser: false, direct_access: true}
+    options ||= {}
+    options.merge!(skip_browser: false, direct_access: true) {|k, v1, v2| v1}
 
     unless options[:skip_browser]
 	describe "visit browser path" do

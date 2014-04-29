@@ -7,11 +7,8 @@ describe 'AuthorizationPages' do
 
     describe "non-authenticated users" do
 	describe "for Users controller" do
-	    describe "edit action" do
-		before { visit edit_user_path(user) }
-
-		it { should have_alert(:warning) }
-		it { should have_content('Log In') }
+	    it_behaves_like "redirects to a login" do
+		let (:browser_path) { edit_user_path(user) }
 	    end
 	end
     end

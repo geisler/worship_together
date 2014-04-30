@@ -140,7 +140,10 @@ describe "User Pages" do
 	end
 
 	describe "non-existant", type: :request do
-	    before { get edit_user_path(-1) }
+	    before do
+		login user, avoid_capybara: true
+		get edit_user_path(-1)
+	    end
 
 	    specify { expect(response).to redirect_to(users_path) }
 

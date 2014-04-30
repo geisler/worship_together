@@ -31,6 +31,15 @@ describe 'AuthorizationPages' do
 		it { should_not have_alert(:warning) }
 		it { should have_content('Edit profile') }
 	    end
+
+	    describe "delete action" do
+		it_behaves_like "redirects to root", skip_browser: true do
+		    let (:login_user) { user }
+		    let (:error_type) { :danger }
+		    let (:direct_http_method) { :delete }
+		    let (:direct_path) { user_path(user) }
+		end
+	    end
 	end
     end
 

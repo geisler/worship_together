@@ -80,7 +80,7 @@ describe User do
     end
 
     describe "administrator account" do
-	let (:admin) { FactoryGirl(:admin) }
+	let (:admin) { FactoryGirl.create(:admin) }
 
 	specify { expect(admin).to be_admin }
     end

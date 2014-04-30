@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
     before_action :ensure_user_logged_in, only: [:edit]
+    before_action :ensure_admin, only: [:destroy]
 
     def index
 	@users = User.all
@@ -45,5 +46,17 @@ class UsersController < ApplicationController
     rescue
 	flash[:danger] = "Unable to find user"
 	redirect_to users_path
+    end
+
+    def ensure_admin
+	if current_user
+	    unless current_user.admin?
+		flash[:danger] = 'Only admins allowed to delete users'
+		redirect_to root_path
+	    end
+	else
+	    flash[:warning] = 'Not logged in as admin user'
+	    redirect_to login_path
+	end
     end
 end

@@ -76,7 +76,6 @@ describe 'AuthorizationPages' do
 		end
 
 		specify { expect(response.body).not_to have_alert(:danger) }
-		specify { expect(response.body).to have_content('Users') }
 	    end
 	end
     end

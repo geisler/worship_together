@@ -63,4 +63,21 @@ describe 'AuthorizationPages' do
 	    end
 	end
     end
+
+    describe "admin user" do
+	let (:admin) { FactoryGirl.create(:admin) }
+
+	describe "for Users controller" do
+	    describe "delete action", type: :request do
+		before do
+		    login admin, avoid_capybara: true
+		    delete user_path(user)
+		    get response.headers['Location']
+		end
+
+		specify { expect(response.body).not_to have_alert(:danger) }
+		specify { expect(response.body).to have_content('Users') }
+	    end
+	end
+    end
 end

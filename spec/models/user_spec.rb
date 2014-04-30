@@ -11,6 +11,7 @@ describe User do
     it { should respond_to(:authenticate) }
 
     it { should be_valid }
+    it { should_not be_admin }
 
     describe "empty name" do
 	before { user.name = '' }
@@ -76,5 +77,11 @@ describe User do
 	it "is not allowed" do
 	    expect(duplicate).not_to be_valid
 	end
+    end
+
+    describe "administrator account" do
+	let (:admin) { FactoryGirl(:admin) }
+
+	specify { expect(admin).to be_admin }
     end
 end

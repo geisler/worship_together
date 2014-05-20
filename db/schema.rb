@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140430155926) do
+ActiveRecord::Schema.define(version: 20140520150733) do
+
+  create_table "locking_examples", force: true do |t|
+    t.string   "name"
+    t.integer  "lock_version"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "name"

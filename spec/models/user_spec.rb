@@ -91,6 +91,7 @@ describe User do
 	let(:duplicate) do
 	    d = user.dup
 	    d.email = 'duplicate@example.com'
+	    d.password = 'new_password'
 	    d
 	end
 
@@ -103,6 +104,7 @@ describe User do
 	let(:duplicate) do
 	    d = user.dup
 	    d.name = 'Jane Doe'
+	    d.password = 'new_password'
 	    d
 	end
 

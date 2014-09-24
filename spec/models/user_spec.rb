@@ -81,7 +81,13 @@ describe User do
 	specify { expect(unsaved_user).not_to be_valid }
     end
 
-    describe "long name" do
+    describe "acceptable long name" do
+	before { user.name = 'b' * 50 }
+
+	it { should be_valid }
+    end
+
+    describe "too long name" do
 	before { user.name = 'a' * 51 }
 
 	it { should_not be_valid }

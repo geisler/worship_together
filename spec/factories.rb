@@ -14,6 +14,7 @@ FactoryGirl.define do
     end
 
     factory :service do
+	church
     end
 
     factory :ride do

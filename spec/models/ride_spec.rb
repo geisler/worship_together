@@ -16,4 +16,16 @@ describe Ride do
     it { should respond_to(:user_rides) }
     it { should respond_to(:user) }
     it { should respond_to(:users) }
+
+    describe "required Service relationship" do
+	before { ride.service_id = nil }
+
+	it { should_not be_valid }
+    end
+
+    describe "required User relationship" do
+	before { ride.user_id = nil }
+
+	it { should_not be_valid }
+    end
 end

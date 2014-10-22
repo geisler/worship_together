@@ -11,4 +11,10 @@ describe Church do
 
     it { should respond_to(:user) }
     it { should respond_to(:services) }
+
+    describe "required User relationship" do
+	before { church.user_id = nil }
+
+	it { should_not be_valid }
+    end
 end

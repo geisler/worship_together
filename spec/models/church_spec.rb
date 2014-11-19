@@ -17,4 +17,16 @@ describe Church do
 
 	it { should_not be_valid }
     end
+
+    describe "empty name" do
+	before { church.name = nil }
+
+	it { should_not be_valid }
+    end
+
+    describe "blank name" do
+	before { church.name = ' ' }
+
+	it { should_not be_valid }
+    end
 end

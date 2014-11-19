@@ -101,6 +101,12 @@ describe "Church Pages" do
 		it { should have_alert(:success) }
 	    end
 
+	    describe "assigns the current user to the church manager" do
+		before { click_button submit }
+
+		specify { expect(Church.last.user).to eql(user) }
+	    end
+
 	    describe "redirects to church profile page", type: :request do
 		before do
 		    login user, avoid_capybara: true

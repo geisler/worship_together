@@ -1,4 +1,4 @@
-<%= render partial: 'errors' %>
+<%= render 'shared/errors', object: @user %>
 
 <%= form_for @user do |form| %>
     <%= render partial: 'fields', locals: { f: form } %>

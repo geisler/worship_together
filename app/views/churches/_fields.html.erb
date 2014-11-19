@@ -1,0 +1,22 @@
+<%= f.label :name, 'Church Name' %>
+<%= f.text_field :name %>
+
+<%= f.label :web_site %>
+<%= f.text_field :web_site %>
+
+<%= f.label :picture %>
+<%= f.text_field :picture %>
+
+<%= f.label :description %>
+<%= f.text_area :description %>
+
+<%= f.fields_for :services do |builder| %>
+    <%= builder.label :start_time %>
+    <%= builder.text_field :start_time %>
+
+    <%= builder.label :finish_time %>
+    <%= builder.text_field :finish_time %>
+
+    <%= builder.label :location %>
+    <%= builder.text_field :location %>
+<% end %>

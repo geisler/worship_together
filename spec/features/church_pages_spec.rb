@@ -45,63 +45,83 @@ describe "Church Pages" do
 	end
     end
 
-#    describe "creating user" do
-#	let (:submit) { 'Create new user' }
-#
-#	before { visit new_user_path }
-#
-#	it "hides password text" do
-#	    should have_field 'user_password', type: 'password'
-#	end
-#
-#	describe "with invalid information" do
-#	    it "does not add the user to the system" do
-#		expect { click_button submit }.not_to change(User, :count)
-#	    end
-#
-#	    it "produces an error message" do
-#		click_button submit
-#		should have_alert(:danger)
-#	    end
-#	end
-#
-#	describe "with valid information" do
-#	    before do
-#		fill_in 'Username', with: 'John Doe'
-#		fill_in 'Email', with: 'john.doe@example.com'
-#		fill_in 'Password', with: 'password'
-#		fill_in 'Confirmation', with: 'password'
-#	    end
-#
-#	    it "allows the user to fill in the fields" do
-#		click_button submit
-#	    end
-#
-#	    it "does add the user to the system" do
-#		expect { click_button submit }.to change(User, :count).by(1)
-#	    end
-#
-#	    describe "produces a welcome message" do
-#		before { click_button submit }
-#
-#		it { should have_alert(:success, text: 'Welcome') }
-#	    end
-#
-#	    describe "redirects to profile page", type: :request do
-#		before do
-#		    post users_path, user: { name: 'John Doe',
-#					     email: 'john.doe@example.com',
-#					     password: 'password',
-#					     password_confirmation: 'password' }
-#		end
-#
-#		specify do
-#		    expect(response).to redirect_to(user_path(assigns(:user)))
-#		end
-#	    end
-#	end
-#    end
-#
+    describe "creating church" do
+	let (:submit) { 'Create new church' }
+	let (:user) { FactoryGirl.create(:user) }
+
+	describe "not logged in", type: :request do
+	    before { get new_church_path }
+
+	    it "redirects to login page" do
+		expect(response).to redirect_to(login_path)
+	    end
+	end
+
+	describe "with invalid information" do
+	    before do
+		login user
+		visit new_church_path
+	    end
+
+	    it "does not add the church to the system" do
+		expect { click_button submit }.not_to change(Church, :count)
+	    end
+
+	    it "produces an error message" do
+		click_button submit
+		should have_alert(:danger)
+	    end
+	end
+
+	describe "logged in user, with valid information" do
+	    before do
+		login user
+		visit new_church_path
+		fill_in 'Name', with: 'Church Name'
+		fill_in 'Web site', with: 'http://www.example.com'
+		fill_in 'Description', with: 'This is the church description.'
+		fill_in 'Picture', with: 'Fake Picture' # change to file upload
+		fill_in 'Start time', with: '9:00 AM'
+		fill_in 'Finish time', with: '11:00 AM'
+		fill_in 'Day of week', with: 'Sunday'
+		fill_in 'Location', with: 'Somewhere important'
+	    end
+
+	    it "allows the user to fill in the fields" do
+		click_button submit
+	    end
+
+	    it "does add the church to the system" do
+		expect { click_button submit }.to change(Church, :count).by(1)
+	    end
+
+	    describe "produces a 'church created' message" do
+		before { click_button submit }
+
+		it { should have_alert(:success) }
+	    end
+
+	    describe "redirects to church profile page", type: :request do
+		before do
+		    login user, avoid_capybara: true
+		    post churches_path,
+			church: { name: 'Church Name',
+				  web_site: 'http://www.example.com',
+				  description: 'This is the church description.',
+				  picture: 'Fake Picture', # change to file upload
+				  services_attributes: {"0" => { start_time: '9:00 AM',
+							 finish_time: '11:00 AM',
+							 day_of_week: 'Sunday',
+							 location: 'Somewhere important' } } }
+		end
+
+		specify do
+		    expect(response).to redirect_to(church_path(assigns(:church)))
+		end
+	    end
+	end
+    end
+
 #    describe "editing users" do
 #	let (:user) { FactoryGirl.create(:user) }
 #	let!(:original_name) { user.name }

@@ -5,12 +5,9 @@ describe 'Service Pages' do
 
     describe "show services" do
 	describe "all" do
-	    let (:church) { FactoryGirl.create(:church) }
+	    let (:church) { FactoryGirl.create(:church, num_services: 25) }
 
-	    before do
-		25.times { FactoryGirl.create(:service, church: church) }
-		visit church_services_path(church)
-	    end
+	    before { visit church_services_path(church) }
 
 	    it { should have_content('List of services') }
 	    it { should have_content('25 services') }
@@ -24,9 +21,9 @@ describe 'Service Pages' do
 	    end
 
 	    describe "by day of week" do
-		let! (:wed) { FactoryGirl.create(:service, day_of_week: 'Wednesday') }
-		let! (:sat) { FactoryGirl.create(:service, day_of_week: 'Saturday') }
-		let! (:sun) { FactoryGirl.create(:service, day_of_week: 'Sunday') }
+		let! (:wed) { FactoryGirl.create(:service, church: church, day_of_week: 'Wednesday') }
+		let! (:sat) { FactoryGirl.create(:service, church: church, day_of_week: 'Saturday') }
+		let! (:sun) { FactoryGirl.create(:service, church: church, day_of_week: 'Sunday') }
 
 		before { visit church_services_path(church, order: :Day) }
 
@@ -34,9 +31,9 @@ describe 'Service Pages' do
 	    end
 
 	    describe "by time of day" do
-		let! (:normal) { FactoryGirl.create(:service, start_time: '9:00 AM') }
-		let! (:early) { FactoryGirl.create(:service, start_time: '6:00 AM') }
-		let! (:late) { FactoryGirl.create(:service, start_time: '6:00 PM') }
+		let! (:normal) { FactoryGirl.create(:service, church: church, start_time: '9:00 AM') }
+		let! (:early) { FactoryGirl.create(:service, church: church, start_time: '6:00 AM') }
+		let! (:late) { FactoryGirl.create(:service, church: church, start_time: '6:00 PM') }
 
 		before { visit church_services_path(church, order: :Time) }
 

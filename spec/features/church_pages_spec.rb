@@ -6,13 +6,37 @@ describe "Church Pages" do
     describe "show churches" do
 	describe "individually" do
 	    let (:church) { FactoryGirl.create(:church) }
+	    let! (:s) { [] }
+	    let! (:t) { [] }
 
-	    before { visit church_path(church) }
+	    before do
+		10.times { |i| s << FactoryGirl.create(:service, church: church) }
+		10.times { |i| t << FactoryGirl.create(:service) }
+
+		visit church_path(church)
+	    end
 
 	    it { should have_content(church.name) }
 	    it { should have_link('official web site', href: church.web_site) }
 	    it { should have_xpath('//img') } # church.picture
 	    it { should have_content(church.description) }
+
+	    it "should show connected services" do
+		s.each do |service|
+		    within("div.service#{service.id}") do
+			have_content(service.start_time)
+			have_content(service.finish_time)
+			have_content(service.location)
+			have_content(service.day_of_week)
+		    end
+		end
+	    end
+
+	    it "should not show services for other churches" do
+		t.each do |service|
+		    should_not have_selector("div.service#{service.id}")
+		end
+	    end
 	end
 
 	describe "non-existant", type: :request do
@@ -101,7 +125,7 @@ describe "Church Pages" do
 		it { should have_alert(:success) }
 	    end
 
-	    describe "assigns the current user to the church manager" do
+	    describe "assigns the current user to be the church manager" do
 		before { click_button submit }
 
 		specify { expect(Church.last.user).to eql(user) }
@@ -128,126 +152,140 @@ describe "Church Pages" do
 	end
     end
 
-#    describe "editing users" do
-#	let (:user) { FactoryGirl.create(:user) }
-#	let!(:original_name) { user.name }
-#	let (:submit) { 'Update user profile' }
-#
-#	before do
-#	    login user
-#	    visit edit_user_path(user)
-#	end
-#
-#	it { should have_field('Username', with: user.name) }
-#	it { should have_field('Email', with: user.email) }
-#	it { should have_field('Password') }
-#
-#	describe "with invalid information" do
-#	    before do
-#		fill_in 'Username', with: ''
-#		fill_in 'Email', with: ''
-#		fill_in 'Password', with: ''
-#	    end
-#
-#	    describe "does not change data" do
-#		before { click_button submit }
-#
-#		specify { expect(user.reload.name).not_to eq('') }
-#		specify { expect(user.reload.name).to eq(original_name) }
-#	    end
-#
-#	    it "does not add a new user to the system" do
-#		expect { click_button submit }.not_to change(User, :count)
-#	    end
-#
-#	    it "produces an error message" do
-#		click_button submit
-#		should have_alert(:danger)
-#	    end
-#	end
-#
-#	describe "non-existant", type: :request do
-#	    before do
-#		login user, avoid_capybara: true
-#		get edit_user_path(-1)
-#	    end
-#
-#	    specify { expect(response).to redirect_to(users_path) }
-#
-#	    describe "follow redirect" do
-#		before { visit edit_user_path(-1) }
-#
-#		it { should have_alert(:danger, text: "Unable") }
-#	    end
-#	end
-#
-#	describe "with valid information" do
-#	    before do
-#		fill_in 'Username', with: 'New Name'
-#		fill_in 'Email', with: 'new.name@example.com'
-#		fill_in 'Password', with: user.password
-#		fill_in 'Confirmation', with: user.password
-#	    end
-#
-#	    describe "changes the data" do
-#		before { click_button submit }
-#
-#		specify { expect(user.reload.name).to eq('New Name') }
-#		specify { expect(user.reload.email).to eq('new.name@example.com') }
-#	    end
-#
-#	    describe "redirects back to profile page", type: :request do
-#		before do
-#		    login user, avoid_capybara: true
-#		    patch user_path(user), user: { name: 'New Name',
-#						   email: 'new.name@example.com',
-#						   password: user.password,
-#						   password_confirmation: user.password }
-#		end
-#
-#		specify { expect(response).to redirect_to(user_path(user)) }
-#	    end
-#
-#	    it "produces an update message" do
-#		click_button submit
-#		should have_alert(:success)
-#	    end
-#
-#	    it "does not add a new user to the system" do
-#		expect { click_button submit }.not_to change(User, :count)
-#	    end
-#	end
-#    end
-#
-#    describe "delete users" do
-#	let!(:user) { FactoryGirl.create(:user) }
-#	let (:admin) { FactoryGirl.create(:admin) }
-#
-#	before do
-#	    login admin
-#	    visit users_path
-#	end
-#
-#	it { should have_link('delete', href: user_path(user)) }
-#
-#	describe "redirects properly", type: :request do
-#	    before do
-#		login admin, avoid_capybara: true
-#		delete user_path(user)
-#	    end
-#
-#	    specify { expect(response).to redirect_to(users_path) }
-#	end
-#
-#	it "produces a delete message" do
-#	    click_link('delete', match: :first)
-#	    should have_alert(:success)
-#	end
-#
-#	it "removes a user from the system" do
-#	    expect do
-#		click_link('delete', match: :first)
-#	    end.to change(User, :count).by(-1)
-#	end
-#    end
+    describe "editing churches" do
+	let (:user) { FactoryGirl.create(:user) }
+	let (:church) { FactoryGirl.create(:church, user: user) }
+	let!(:original_name) { church.name }
+	let (:submit) { 'Update church profile' }
+
+	before do
+	    login user
+	    visit edit_church_path(church)
+	end
+
+	it { should have_field('Name', with: church.name) }
+	it { should have_field('Picture') } # change to file upload
+	it { should have_field('Web site', with: church.web_site) }
+	it { should have_field('Description', with: church.description) }
+
+	describe "with invalid information" do
+	    before do
+		fill_in 'Name', with: ''
+	    end
+
+	    describe "does not change data" do
+		before { click_button submit }
+
+		specify { expect(church.reload.name).not_to eq('') }
+		specify { expect(church.reload.name).to eq(original_name) }
+	    end
+
+	    it "does not add a new church to the system" do
+		expect { click_button submit }.not_to change(Church, :count)
+	    end
+
+	    it "produces an error message" do
+		click_button submit
+		should have_alert(:danger)
+	    end
+	end
+
+	describe "non-existant", type: :request do
+	    before do
+		login user, avoid_capybara: true
+		get edit_church_path(-1)
+	    end
+
+	    specify { expect(response).to redirect_to(churches_path) }
+
+	    describe "follow redirect" do
+		before { visit edit_church_path(-1) }
+
+		it { should have_alert(:danger, text: "Unable") }
+	    end
+	end
+
+	describe "with valid information" do
+	    before do
+		fill_in 'Name', with: 'New Church Name'
+		fill_in 'Web site', with: 'http://www.example.com/new'
+		fill_in 'Description', with: 'This is the NEW church description.'
+		fill_in 'Picture', with: 'New Fake Picture' # change to file upload
+		fill_in 'Start time', with: '7:00 PM'
+		fill_in 'Finish time', with: '8:30 PM'
+		fill_in 'Day of week', with: 'Saturday'
+		fill_in 'Location', with: 'Somewhere casual'
+	    end
+
+	    describe "changes the data" do
+		before { click_button submit }
+
+		specify { expect(church.reload.name).to eq('New Church Name') }
+		specify { expect(church.reload.web_site).to eq('http://www.example.com/new') }
+		specify { expect(church.reload.description).to eq('This is the NEW church description.') }
+		specify { expect(church.reload.services.first.start_time.strftime('%H:%M')).to eq('19:00') }
+		specify { expect(church.reload.services.first.finish_time.strftime('%H:%M')).to eq('20:30') }
+		specify { expect(church.reload.services.first.day_of_week).to eq('Saturday') }
+		specify { expect(church.reload.services.first.location).to eq('Somewhere casual') }
+	    end
+
+	    describe "redirects back to church's profile page", type: :request do
+		before do
+		    login user, avoid_capybara: true
+		    patch church_path(church),
+			church: { name: 'New Church Name',
+				  web_site: 'http://www.example.com/new',
+				  description: 'This is the NEW church description.',
+				  picture: 'New Fake Picture', # change to file upload
+				  services_attributes: {"0" => { start_time: '7:00 PM',
+							 finish_time: '8:30 PM',
+							 day_of_week: 'Saturday',
+							 location: 'Somewhere casual' } } }
+		end
+
+		specify { expect(response).to redirect_to(church_path(church)) }
+	    end
+
+	    it "produces an update message" do
+		click_button submit
+		should have_alert(:success)
+	    end
+
+	    it "does not add a new church to the system" do
+		expect { click_button submit }.not_to change(Church, :count)
+	    end
+	end
+    end
+
+    describe "delete church" do
+	let!(:church) { FactoryGirl.create(:church) }
+	let (:admin) { FactoryGirl.create(:admin) }
+
+	before do
+	    login admin
+	    visit churches_path
+	end
+
+	it { should have_link('delete', href: church_path(church)) }
+
+	describe "redirects properly", type: :request do
+	    before do
+		login admin, avoid_capybara: true
+		delete church_path(church)
+	    end
+
+	    specify { expect(response).to redirect_to(churches_path) }
+	end
+
+	it "produces a delete message" do
+	    click_link('delete', match: :first)
+	    should have_alert(:success)
+	end
+
+	it "removes a church from the system" do
+	    expect do
+		click_link('delete', match: :first)
+	    end.to change(Church, :count).by(-1)
+	end
+    end
 end

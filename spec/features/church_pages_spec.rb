@@ -8,6 +8,7 @@ describe "Church Pages" do
 	    let (:church) { FactoryGirl.create(:church) }
 	    let! (:s) { FactoryGirl.create_list(:service, 10, church: church) }
 	    let! (:t) { FactoryGirl.create_list(:service, 10) }
+	    let! (:attendees) { FactoryGirl.create_list(:user, 25, church: church) }
 
 	    before { visit church_path(church) }
 
@@ -30,6 +31,14 @@ describe "Church Pages" do
 	    it "should not show services for other churches" do
 		t.each do |service|
 		    should_not have_selector("div.service#{service.id}")
+		end
+	    end
+
+	    it "should show attendees" do
+		attendees.each do |attendee|
+		    within("div.user#{attendee.id}") do
+			have_link(attendee.name, href: user_path(attendee))
+		    end
 		end
 	    end
 	end

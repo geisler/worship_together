@@ -6,15 +6,10 @@ describe "Church Pages" do
     describe "show churches" do
 	describe "individually" do
 	    let (:church) { FactoryGirl.create(:church) }
-	    let! (:s) { [] }
-	    let! (:t) { [] }
+	    let! (:s) { FactoryGirl.create_list(:service, 10, church: church) }
+	    let! (:t) { FactoryGirl.create_list(:service, 10) }
 
-	    before do
-		10.times { |i| s << FactoryGirl.create(:service, church: church) }
-		10.times { |i| t << FactoryGirl.create(:service) }
-
-		visit church_path(church)
-	    end
+	    before { visit church_path(church) }
 
 	    it { should have_content(church.name) }
 	    it { should have_link('official web site', href: church.web_site) }

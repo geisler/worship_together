@@ -20,10 +20,10 @@ describe "Church Pages" do
 	    it "should show connected services" do
 		s.each do |service|
 		    within("div.service#{service.id}") do
-			have_content(service.start_time)
-			have_content(service.finish_time)
-			have_content(service.location)
-			have_content(service.day_of_week)
+			should have_content(service.start_time)
+			should have_content(service.finish_time)
+			should have_content(service.location)
+			should have_content(service.day_of_week)
 		    end
 		end
 	    end
@@ -37,7 +37,7 @@ describe "Church Pages" do
 	    it "should show attendees" do
 		attendees.each do |attendee|
 		    within("div.user#{attendee.id}") do
-			have_link(attendee.name, href: user_path(attendee))
+			should have_link(attendee.name, href: user_path(attendee))
 		    end
 		end
 	    end

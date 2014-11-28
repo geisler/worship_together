@@ -40,5 +40,26 @@ describe 'Service Pages' do
 		it { should have_content(/#{early.start_time}.*#{normal.start_time}.*#{late.start_time}/) }
 	    end
 	end
+
+	describe "individual" do
+	    let (:service) { FactoryGirl.create(:service, num_rides: 25) }
+
+	    before { visit service_path(service) }
+
+	    it { should have_content(service.day_of_week) }
+	    it { should have_content(service.start_time) }
+	    it { should have_content(service.finish_time) }
+	    it { should have_content(service.location) }
+
+	    it "should show all associated rides" do
+		service.rides.each do |ride|
+		    within("div.ride#{ride.id}") do
+			have_content(ride.date)
+			have_content(ride.seats_available)
+			have_content(ride.meeting_location)
+		    end
+		end
+	    end
+	end
     end
 end

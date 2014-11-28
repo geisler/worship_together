@@ -11,7 +11,7 @@ describe 'Ride Pages' do
 	    end
 
 	    it { should have_content('List of rides') }
-	    it { should have_content('25 rides') }
+	    it { should have_content("#{Ride.count} rides") }
 
 	    it "should show all rides" do
 		Ride.all.each do |ride|

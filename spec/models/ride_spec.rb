@@ -41,6 +41,30 @@ describe Ride do
 	it { should_not be_valid }
     end
 
+    describe "date now passed" do
+	before { ride.date = 1.day.ago }
+
+	it { should be_valid }
+    end
+
+    describe "date now today" do
+	before { ride.date = Date.today }
+
+	it { should be_valid }
+    end
+
+    describe "date time travel" do
+	let (:bad_ride) { FactoryGirl.build(:ride, date: 1.day.ago) }
+
+	specify { expect(bad_ride).not_to be_valid }
+    end
+
+    describe "created today" do
+	let (:bad_ride) { FactoryGirl.build(:ride, date: Date.today) }
+
+	specify { expect(bad_ride).not_to be_valid }
+    end
+
     describe "empty leave time" do
 	before { ride.leave_time = '' }
 
@@ -65,6 +89,12 @@ describe Ride do
 	it { should_not be_valid }
     end
 
+    describe "return time too early" do
+	before { ride.return_time = ride.leave_time - 1.minute }
+
+	it { should_not be_valid }
+    end
+
     describe "empty number of seats" do
 	before { ride.number_of_seats = '' }
 
@@ -77,6 +107,24 @@ describe Ride do
 	it { should_not be_valid }
     end
 
+    describe "string-y number of seats" do
+	before { ride.number_of_seats = 'A' }
+
+	it { should_not be_valid }
+    end
+
+    describe "negative number of seats" do
+	before { ride.number_of_seats = -1 }
+
+	it { should_not be_valid }
+    end
+
+    describe "fractional number of seats" do
+	before { ride.number_of_seats = 1.5 }
+
+	it { should_not be_valid }
+    end
+
     describe "empty seats available" do
 	before { ride.seats_available = '' }
 
@@ -85,6 +133,30 @@ describe Ride do
 
     describe "blank seats available" do
 	before { ride.seats_available = ' ' }
+
+	it { should_not be_valid }
+    end
+
+    describe "string-y seats available" do
+	before { ride.seats_available = 'A' }
+
+	it { should_not be_valid }
+    end
+
+    describe "negative seats available" do
+	before { ride.seats_available = -1 }
+
+	it { should_not be_valid }
+    end
+
+    describe "fractional seats available" do
+	before { ride.seats_available = 1.5 }
+
+	it { should_not be_valid }
+    end
+
+    describe "too many seats available" do
+	before { ride.seats_available = ride.number_of_seats + 1 }
 
 	it { should_not be_valid }
     end

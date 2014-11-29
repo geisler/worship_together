@@ -21,9 +21,9 @@ describe 'Ride Pages' do
 	    end
 
 	    describe "by date" do
-		let! (:middle) { FactoryGirl.create(:ride, date: '2014/10/19', service: service) }
-		let! (:last) { FactoryGirl.create(:ride, date: '2014/10/26', service: service) }
-		let! (:first) { FactoryGirl.create(:ride, date: '2014/10/12', service: service) }
+		let! (:middle) { FactoryGirl.create(:ride, date: '2015/10/19', service: service) }
+		let! (:last) { FactoryGirl.create(:ride, date: '2015/10/26', service: service) }
+		let! (:first) { FactoryGirl.create(:ride, date: '2015/10/12', service: service) }
 
 		before { visit service_rides_path(service, order: :Date) }
 

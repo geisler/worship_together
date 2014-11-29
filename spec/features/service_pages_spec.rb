@@ -93,7 +93,7 @@ describe 'Service Pages' do
 
 		describe "with valid information" do
 		    before do
-			fill_in 'Date', with: '2014-11-23'
+			fill_in 'Date', with: (Date.today + 1.day).to_s
 			fill_in 'Leave time', with: '8:30 AM'
 			fill_in 'Return time', with: '11:30 AM'
 			fill_in 'Number of seats', with: '5'
@@ -120,7 +120,7 @@ describe 'Service Pages' do
 			before do
 			    login user, avoid_capybara: true
 			    post service_rides_path(service),
-				ride: { date: '2014-11-23',
+				ride: { date: (Date.today + 1.day).to_s,
 					leave_time: '8:30 AM',
 					return_time: '11:30 AM',
 					number_of_seats: '5',

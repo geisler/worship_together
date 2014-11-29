@@ -61,6 +61,80 @@ describe 'Service Pages' do
 		    end
 		end
 	    end
+
+	    describe "allow the user to provide a ride" do
+		let (:user) { FactoryGirl.create(:user) }
+		let (:submit) { 'Offer ride' }
+
+		before do
+		    login user
+		    visit service_path(service)
+		end
+
+		it { should have_field('Date') }
+		it { should have_field('Leave time') }
+		it { should have_field('Return time') }
+		it { should have_field('Number of seats') }
+		it { should have_field('Seats available') }
+		it { should have_field('Meeting location') }
+		it { should have_field('Vehicle') }
+		it { should have_button(submit) }
+
+		describe "with invalid information" do
+		    it "does not add the ride to the system" do
+			expect { click_button submit }.not_to change(Ride, :count)
+		    end
+
+		    it "produces an error message" do
+			click_button submit
+			should have_alert(:danger)
+		    end
+		end
+
+		describe "with valid information" do
+		    before do
+			fill_in 'Date', with: '2014-11-23'
+			fill_in 'Leave time', with: '8:30 AM'
+			fill_in 'Return time', with: '11:30 AM'
+			fill_in 'Number of seats', with: '5'
+			fill_in 'Seats available', with: '3'
+			fill_in 'Meeting location', with: 'DC'
+			fill_in 'Vehicle', with: '4-door sedan'
+		    end
+
+		    it "allows the user to fill in the fields" do
+			click_button submit
+		    end
+
+		    it "does add the ride to the system" do
+			expect { click_button submit }.to change(Ride, :count).by(1)
+		    end
+
+		    describe "produces a success message" do
+			before { click_button submit }
+
+			it { should have_alert(:success) }
+		    end
+
+		    describe "redirects to ride page", type: :request do
+			before do
+			    login user, avoid_capybara: true
+			    post service_rides_path(service),
+				ride: { date: '2014-11-23',
+					leave_time: '8:30 AM',
+					return_time: '11:30 AM',
+					number_of_seats: '5',
+					seats_available: '3',
+					meeting_location: 'DC',
+					vehicle: '4-door sedan' }
+			end
+
+			specify do
+			    expect(response).to redirect_to(ride_path(assigns(:ride)))
+			end
+		    end
+		end
+	    end
 	end
     end
 end

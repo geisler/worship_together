@@ -53,5 +53,50 @@ describe 'Ride Pages' do
 #		it { should have_content(/#{last.date}.*#{first.date}.*#{middle.date}/) }
 #	    end
 	end
+
+	describe "individually" do
+	    let (:ride) { FactoryGirl.create(:ride) }
+	    let (:claim) { 'Claim ride' }
+
+	    before { visit ride_path(ride) }
+
+	    it { should have_content(ride.service.church.name) }
+	    it { should have_content(ride.service.location) }
+	    it { should have_link(ride.user.name, href: user_path(ride.user)) }
+	    it { should have_content(ride.leave_time) }
+	    it { should have_content(ride.return_time) }
+	    it { should have_content(ride.meeting_location) }
+	    it { should have_content(ride.vehicle) }
+	    it { should have_content(ride.seats_available) }
+	    it { should have_content(ride.number_of_seats) }
+
+	    it { should_not have_button(claim) }
+
+	    describe "claiming a ride" do
+		let (:user) { FactoryGirl.create(:user) }
+		let!(:orig_seats) { ride.seats_available }
+
+		before do
+		    login user
+		    visit ride_path(ride)
+		end
+
+		it { should have_button(claim) }
+
+		it "changes the data" do
+		    click_button claim
+		    expect(ride.reload.seats_available).to eq(orig_seats - 1)
+		end
+
+		it "creates a user ride" do
+		    expect { click_button claim }.to change(UserRide, :count).by(1)
+		end
+
+		it "produces an update message" do
+		    click_button claim
+		    should have_alert(:success)
+		end
+	    end
+	end
     end
 end

@@ -6,9 +6,10 @@ describe "Church Pages" do
     describe "show churches" do
 	describe "individually" do
 	    let (:church) { FactoryGirl.create(:church) }
-	    let! (:s) { FactoryGirl.create_list(:service, 10, church: church) }
-	    let! (:t) { FactoryGirl.create_list(:service, 10) }
-	    let! (:attendees) { FactoryGirl.create_list(:user, 25, church: church) }
+	    let!(:s) { FactoryGirl.create_list(:service, 10, church: church) }
+	    let!(:t) { FactoryGirl.create_list(:service, 10) }
+	    let!(:attendees) { FactoryGirl.create_list(:user, 25, church: church) }
+	    let (:attend) { 'Attend this church' }
 
 	    before { visit church_path(church) }
 
@@ -39,6 +40,31 @@ describe "Church Pages" do
 		    within("div.user#{attendee.id}") do
 			should have_link(attendee.name, href: user_path(attendee))
 		    end
+		end
+	    end
+
+	    it { should_not have_button(attend) }
+
+	    describe "choose to attend this church" do
+		let (:user) { FactoryGirl.create(:user) }
+		let!(:orig_num_users) { church.users.count }
+
+		before do
+		    login user
+		    visit church_path(church)
+		end
+
+		it { should have_button(attend) }
+
+		it "produces a 'church attended' message" do
+		    click_button attend
+		    should have_alert(:success)
+		end
+
+		it "adds the user to the attendee list" do
+		    click_button attend
+		    expect(church.users).to include(user)
+		    expect(church.reload.users.count).to eq(orig_num_users + 1)
 		end
 	    end
 	end

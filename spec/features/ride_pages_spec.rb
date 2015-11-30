@@ -70,6 +70,7 @@ describe 'Ride Pages' do
 	    it { should have_content(ride.seats_available) }
 	    it { should have_content(ride.number_of_seats) }
 
+	    # no one is logged in, so
 	    it { should_not have_button(claim) }
 
 	    describe "claiming a ride" do
@@ -81,6 +82,7 @@ describe 'Ride Pages' do
 		    visit ride_path(ride)
 		end
 
+		# now someone is logged in, so
 		it { should have_button(claim) }
 
 		it "changes the data" do
@@ -101,6 +103,30 @@ describe 'Ride Pages' do
 		    click_button claim
 		    should_not have_button(claim)
 		end
+	    end
+
+	    describe "as the ride provider" do
+		let (:user) { ride.user }
+
+		before do
+		    login user
+		    visit ride_path(ride)
+		end
+
+		it { should_not have_button(claim) }
+		it { should have_content("You are providing") }
+	    end
+
+	    describe "as a rider" do
+		let (:user) { ride.users.first }
+
+		before do
+		    login user
+		    visit ride_path(ride)
+		end
+
+		it { should_not have_button(claim) }
+		it { should have_content("You are riding") }
 	    end
 	end
     end

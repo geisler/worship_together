@@ -62,6 +62,35 @@ describe 'Service Pages' do
 		end
 	    end
 
+
+	    describe "marks the ride provider properly" do
+		let (:ride) { service.rides.first }
+		let (:user) { ride.user }
+
+		before do
+		    user.password = "password" # hack
+		    login user
+		    visit service_path(service)
+		end
+
+		it { should have_selector("div.ride#{ride.id}",
+					  text: '(provider)') }
+	    end
+
+	    describe "marks the rider properly" do
+		let (:ride) { service.rides.first }
+		let (:user) { ride.users.first }
+
+		before do
+		    user.password = "password" # hack
+		    login user
+		    visit service_path(service)
+		end
+
+		it { should have_selector("div.ride#{ride.id}",
+					  text: '(rider)') }
+	    end
+
 	    describe "allow the user to provide a ride" do
 		let (:user) { FactoryGirl.create(:user) }
 		let (:submit) { 'Offer ride' }

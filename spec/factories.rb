@@ -28,6 +28,11 @@ FactoryGirl.define do
     end
 
     factory :ride do
+	transient { num_riders 1 }
+
+	after(:create) do |ride, evaluator|
+	    ride.users = create_list(:user, evaluator.num_riders)
+	end
     end
 
     factory :user_ride do

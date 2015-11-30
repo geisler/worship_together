@@ -96,6 +96,11 @@ describe 'Ride Pages' do
 		    click_button claim
 		    should have_alert(:success)
 		end
+
+		it "stops displaying the button after clicking" do
+		    click_button claim
+		    should_not have_button(claim)
+		end
 	    end
 	end
     end

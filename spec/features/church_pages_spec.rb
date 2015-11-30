@@ -43,6 +43,7 @@ describe "Church Pages" do
 		end
 	    end
 
+	    # no one is logged in, so
 	    it { should_not have_button(attend) }
 
 	    describe "choose to attend this church" do
@@ -54,6 +55,7 @@ describe "Church Pages" do
 		    visit church_path(church)
 		end
 
+		# now someone is logged in, so
 		it { should have_button(attend) }
 
 		it "produces a 'church attended' message" do
@@ -66,6 +68,39 @@ describe "Church Pages" do
 		    expect(church.users).to include(user)
 		    expect(church.reload.users.count).to eq(orig_num_users + 1)
 		end
+
+		it "stops displaying the button" do
+		    click_button attend
+		    should_not have_button(attend)
+		end
+	    end
+
+	    describe "by the church manager" do
+		let (:user) { church.user }
+
+		before do
+		    user.password = "password" # hack!
+		    login user
+		    visit church_path(church)
+		end
+
+		# initially, the church manager does not attend the
+		# church, so
+		it { should have_button(attend) }
+		it { should have_content("You manage") }
+	    end
+
+	    describe "by a church attendee" do
+		let (:user) { church.users.first }
+
+		before do
+		    user.password = "password" # hack!
+		    login user
+		    visit church_path(church)
+		end
+
+		it { should_not have_button(attend) }
+		it { should have_content("You attend") }
 	    end
 	end
 

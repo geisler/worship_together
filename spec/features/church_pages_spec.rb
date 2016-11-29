@@ -22,7 +22,7 @@ describe "Church Pages" do
 
 	    it "should show connected services" do
 		s.each do |service|
-		    within("div.service#{service.id}") do
+		    within("div.service.service-#{service.id}") do
 			should have_content(service.start_time)
 			should have_content(service.finish_time)
 			should have_content(service.location)
@@ -33,13 +33,13 @@ describe "Church Pages" do
 
 	    it "should not show services for other churches" do
 		t.each do |service|
-		    should_not have_selector("div.service#{service.id}")
+		    should_not have_selector("div.service.service-#{service.id}")
 		end
 	    end
 
 	    it "should show attendees" do
 		attendees.each do |attendee|
-		    within("div.user#{attendee.id}") do
+		    within("div.user.user-#{attendee.id}") do
 			should have_link(attendee.name, href: user_path(attendee))
 		    end
 		end

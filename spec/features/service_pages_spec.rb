@@ -55,7 +55,7 @@ describe 'Service Pages' do
 
 	    it "should show all associated rides" do
 		service.rides.each do |ride|
-		    within("div.ride#{ride.id}") do
+		    within("div.ride.ride-#{ride.id}") do
 			should have_content(ride.date)
 			should have_content(ride.seats_available)
 			should have_content(ride.meeting_location)
@@ -75,7 +75,7 @@ describe 'Service Pages' do
 		    visit service_path(service)
 		end
 
-		it { should have_selector("div.ride#{ride.id}",
+		it { should have_selector("div.ride.ride-#{ride.id}",
 					  text: '(provider)') }
 	    end
 
@@ -89,7 +89,7 @@ describe 'Service Pages' do
 		    visit service_path(service)
 		end
 
-		it { should have_selector("div.ride#{ride.id}",
+		it { should have_selector("div.ride.ride-#{ride.id}",
 					  text: '(rider)') }
 	    end
 

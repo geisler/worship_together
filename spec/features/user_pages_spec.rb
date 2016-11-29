@@ -27,13 +27,14 @@ describe "User Pages" do
 	end
 
 	describe "all" do
+	    let (:num_users) { Kernel.rand(20..30) }
 	    before do
-		25.times { |i| FactoryGirl.create(:user) }
+		num_users.times { |i| FactoryGirl.create(:user) }
 		visit users_path
 	    end
 
 	    it { should have_content('List of users') }
-	    it { should have_content('25 users') }
+	    it { should have_content("#{num_users} users") }
 
 	    it "should show all users" do
 		User.all.each do |user|

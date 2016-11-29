@@ -5,12 +5,13 @@ describe 'Ride Pages' do
 
     describe "show rides" do
 	describe "all" do
-	    let (:service) { FactoryGirl.create(:service, num_rides: 25) }
+	    let (:num_rides) { Kernel.rand(20..30) }
+	    let (:service) { FactoryGirl.create(:service, num_rides: num_rides) }
 
 	    before { visit service_rides_path(service) }
 
 	    it { should have_content('List of rides') }
-	    it { should have_content("25 rides") }
+	    it { should have_content("#{num_rides} rides") }
 
 	    it "should show all rides" do
 		service.rides.each do |ride|

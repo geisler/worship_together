@@ -5,12 +5,13 @@ describe 'Service Pages' do
 
     describe "show services" do
 	describe "all" do
-	    let (:church) { FactoryGirl.create(:church, num_services: 25) }
+	    let (:num_services) { Kernel.rand(20..30) }
+	    let (:church) { FactoryGirl.create(:church, num_services: num_services) }
 
 	    before { visit church_services_path(church) }
 
 	    it { should have_content('List of services') }
-	    it { should have_content('25 services') }
+	    it { should have_content("#{num_services} services") }
 
 	    it "should show all services" do
 		Service.all.each do |service|
@@ -42,7 +43,8 @@ describe 'Service Pages' do
 	end
 
 	describe "individual" do
-	    let (:service) { FactoryGirl.create(:service, num_rides: 25) }
+	    let (:num_rides) { Kernel.rand(20..30) }
+	    let (:service) { FactoryGirl.create(:service, num_rides: num_rides) }
 
 	    before { visit service_path(service) }
 

@@ -131,4 +131,115 @@ describe 'Ride Pages' do
 	    end
 	end
     end
+
+    describe "editing rides" do
+	let (:user) { FactoryGirl.create(:user) }
+	let (:ride) { FactoryGirl.create(:ride, user: user) }
+	let!(:original_vehicle) { ride.vehicle }
+	let (:submit) { 'Update ride information' }
+
+	before do
+	    login user
+	    visit edit_ride_path(ride)
+	end
+
+	it { should have_field('Date', with: ride.date) }
+	it { should have_field('Leave time', with: ride.leave_time) }
+	it { should have_field('Return time', with: ride.return_time) }
+	it { should have_field('Number of seats', with: ride.number_of_seats) }
+	it { should have_field('Seats available', with: ride.seats_available) }
+	it { should have_field('Meeting location', with: ride.meeting_location) }
+	it { should have_field('Vehicle', with: ride.vehicle) }
+
+	describe "with invalid information" do
+	    before do
+		fill_in 'Date', with: ''
+		fill_in 'Leave time', with: ''
+		fill_in 'Return time', with: ''
+		fill_in 'Number of seats', with: ''
+		fill_in 'Seats available', with: ''
+		fill_in 'Meeting location', with: ''
+		fill_in 'Vehicle', with: ''
+	    end
+
+	    describe "does not change data" do
+		before { click_button submit }
+
+		specify { expect(ride.reload.vehicle).not_to eq('') }
+		specify { expect(ride.reload.vehicle).to eq(original_vehicle) }
+	    end
+
+	    it "does not add a ride to the system" do
+		expect { click_button submit }.not_to change(Ride, :count)
+	    end
+
+	    it "produces an error message" do
+		click_button submit
+		should have_alert(:danger)
+	    end
+	end
+
+	describe "non-existant", type: :request do
+	    before do
+		login user, avoid_capybara: true
+		get edit_ride_path(-1)
+	    end
+
+	    specify { expect(response).to redirect_to(rides_path) }
+
+	    describe "follow redirect" do
+		before { visit edit_ride_path(-1) }
+
+		it { should have_alert(:danger, text: "Unable") }
+	    end
+	end
+
+	describe "with valid information" do
+	    before do
+		fill_in 'Date', with: Date.tomorrow.to_s
+		fill_in 'Leave time', with: '9:01 AM'
+		fill_in 'Return time', with: '11:29 AM'
+		fill_in 'Number of seats', with: '17'
+		fill_in 'Seats available', with: '13'
+		fill_in 'Meeting location', with: 'TBD'
+		fill_in 'Vehicle', with: 'Unknown'
+	    end
+
+	    describe "changes the data" do
+		before { click_button submit }
+
+		specify { expect(ride.reload.date).to eq(Date.tomorrow) }
+		specify { expect(ride.reload.leave_time.strftime("%r")).to eq(Time.parse('9:01 AM').strftime("%r")) }
+		specify { expect(ride.reload.return_time.strftime("%r")).to eq(Time.parse('11:29 AM').strftime("%r")) }
+		specify { expect(ride.reload.number_of_seats).to eq(17) }
+		specify { expect(ride.reload.seats_available).to eq(13) }
+		specify { expect(ride.reload.meeting_location).to eq('TBD') }
+		specify { expect(ride.reload.vehicle).to eq('Unknown') }
+	    end
+
+	    describe "redirects back to ride page", type: :request do
+		before do
+		    login user, avoid_capybara: true
+		    patch ride_path(ride), ride: { date: Date.tomorrow.to_s,
+						   leave_time: "9:01 AM",
+						   return_time: "11:29 AM",
+						   number_of_seats: 17,
+						   seats_available: 13,
+						   meeting_location: "TBD",
+						   vehicle: "Unknown" }
+		end
+
+		specify { expect(response).to redirect_to(ride_path(ride)) }
+	    end
+
+	    it "produces an update message" do
+		click_button submit
+		should have_alert(:success)
+	    end
+
+	    it "does not add a new ride to the system" do
+		expect { click_button submit }.not_to change(Ride, :count)
+	    end
+	end
+    end
 end

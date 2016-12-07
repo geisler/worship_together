@@ -4,7 +4,7 @@ describe 'AuthorizationPages' do
     subject { page }
 
     let (:user) { FactoryGirl.create(:user) }
-    let (:church) {FactoryGirl.create(:church) }
+    let (:church) { FactoryGirl.create(:church) }
     let (:ride) { FactoryGirl.create(:ride) }
     let (:service) { FactoryGirl.create(:service) }
 
@@ -93,6 +93,30 @@ describe 'AuthorizationPages' do
 		end
 	    end
 	end
+
+	describe "for Churches controller" do
+	    describe "edit action" do
+		before do
+		    login(church.user)
+		    visit edit_church_path(church)
+		end
+
+		it { should_not have_alert(:warning) }
+		it { should have_content('Update profile') }
+	    end
+	end
+
+	describe "for Rides controller" do
+	    describe "edit action" do
+		before do
+		    login(ride.user)
+		    visit edit_ride_path(ride)
+		end
+
+		it { should_not have_alert(:warning) }
+		it { should have_content('Edit ride') }
+	    end
+	end
     end
 
     describe "authenticated, but wrong users" do
@@ -129,6 +153,25 @@ describe 'AuthorizationPages' do
 
 		it_behaves_like "redirects to root", skip_browser: true do
 		    let (:direct_path) { church_path(church) }
+		    let (:direct_http_method) { :delete }
+		end
+	    end
+	end
+
+	describe "for Rides controller" do
+	    describe "edit action" do
+		let (:login_user) { FactoryGirl.create(:user) }
+		let (:error_type) { :danger }
+
+		it_behaves_like "redirects to root" do
+		    let (:browser_path) { edit_ride_path(ride) }
+		    let (:error_signature) { 'Update ride information' }
+		    let (:direct_path) { ride_path(ride) }
+		    let (:direct_http_method) { :patch }
+		end
+
+		it_behaves_like "redirects to root", skip_browser: true do
+		    let (:direct_path) { ride_path(ride) }
 		    let (:direct_http_method) { :delete }
 		end
 	    end

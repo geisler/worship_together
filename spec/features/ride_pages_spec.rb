@@ -185,7 +185,7 @@ describe 'Ride Pages' do
 		get edit_ride_path(-1)
 	    end
 
-	    specify { expect(response).to redirect_to(rides_path) }
+	    specify { expect(response).to redirect_to(root_path) }
 
 	    describe "follow redirect" do
 		before { visit edit_ride_path(-1) }
